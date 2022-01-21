@@ -23,8 +23,10 @@
                     <option value="/">/</option>
                     <option value="**">**</option>
                 </select>
-                <p v-if="firstNum !== null && secondNum !== null">=</p>
-                <p v-if="firstNum !== null && secondNum !== null">
+                <p v-if="this.firstNum.length !== 0 &&
+                this.secondNum.length !== 0">=</p>
+                <p v-if="this.firstNum.length !== 0 &&
+                this.secondNum.length !== 0">
                     {{ result }}
                 </p>
             </div>
@@ -37,6 +39,18 @@
                 @input="checkInput"
             />
         </div>
+        <div class="keyboard">
+        <div class="btn" v-for="(item, i) in numbers" :key="i" @click="pushNum">
+            {{ i }} 
+        </div>
+        <div class="btn" @click="del">&larr;</div>
+        </div>
+        <div class="selector">
+            <input type="radio" name="selector" id="1btn" value="Первое поле" @click="changeField(1)" checked>
+            <label for="1btn">Первое поле</label>
+            <input type="radio" name="selector" id="2btn" value="Второе поле" @click="changeField(2)">
+            <label for="2btn">Второе поле</label>
+        </div>
     </div>
 </template>
 
@@ -46,17 +60,17 @@ export default {
         return {
             hasFirstNum: false,
             isActive: false,
-            firstNum: null,
+            firstNum: "",
             operation: null,
-            secondNum: null,
+            secondNum: "",
             result: null,
+            numbers: 10,
+            selected: 1
         };
     },
     methods: {
         calc() {
             if (
-                this.firstNum !== null &&
-                this.secondNum !== null &&
                 this.firstNum.length !== 0 &&
                 this.secondNum.length !== 0
             ) {
@@ -78,6 +92,32 @@ export default {
                 this.calc();
             }
         },
+        changeField(n) {
+            this.selected = n
+        },
+        pushNum(event) {
+            if(this.selected === 1){
+                this.firstNum += event.target.innerText
+            }
+            else {
+                this.secondNum += event.target.innerText
+            }
+            if(this.operation !== null) {
+                this.calc()
+            }
+        },
+        del() {
+            this.selected === 1 ? this.delLastIndex(this.firstNum) : this.delLastIndex(this.secondNum)
+            if(this.operation !== null) {
+                this.calc()
+            }
+        },
+        delLastIndex(str) {
+            let arr = str.split('')
+            arr.splice(str.lastIndexOf(), 1)
+            str = arr.join('')
+            this.selected === 1 ? this.firstNum = str : this.secondNum = str
+            }
     },
 };
 </script>
@@ -174,5 +214,19 @@ p {
 :root:lang(iw) .select-css {
     background-position: left 0.7em top 50%, 0 0;
     padding: 0.6em 0.8em 0.5em 1.4em;
+}
+
+.keyboard {
+    width: 300px;
+    display: flex;
+    justify-content: space-between;
+    margin-top: 50px;
+}
+.btn {
+    width: 20px;
+    height: 20px;
+    border: 1px solid gray;
+    cursor: pointer;
+    padding-top: 3px;
 }
 </style>
