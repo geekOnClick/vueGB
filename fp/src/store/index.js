@@ -1,10 +1,14 @@
+import Vue from 'vue';
+import Vuex from 'vuex';
+import category from './category';
+import payments from './payments';
 
-import { createStore } from "vuex"
-import postStore from "./module/postStore"
+Vue.use(Vuex);
 
+export default new Vuex.Store({
 
-export default createStore({
-    modules: {
-        postStore
-    }
-})
+  modules: {
+    payments,
+    category,
+  },
+});
